@@ -1,0 +1,80 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidUserProfile(data) {
+      return data.size() >= 3 &&
+             data.id is string &&
+             data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 100 &&
+             data.email is string && data.email.size() > 0;
+    }
+
+    function isValidAssignment(data) {
+      return data.size() >= 4 &&
+             data.id is int &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 150 &&
+             data.subject is string && data.subject.size() > 0 &&
+             data.isCompleted is bool;
+    }
+
+    function isValidStudyNote(data) {
+      return data.size() >= 3 &&
+             data.id is int &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 200 &&
+             data.subject is string && data.subject.size() > 0;
+    }
+
+    function isValidChatMessage(data) {
+      return data.size() >= 3 &&
+             data.id is int &&
+             data.text is string && data.text.size() > 0 &&
+             data.courseCode is string;
+    }
+
+    // User Profile Document
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(userId);
+
+      // User Assignments Subcollection
+      match /assignments/{assignmentId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidAssignment(request.resource.data);
+        allow update: if isOwner(userId) && isValidAssignment(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      // User Study Notes Subcollection
+      match /notes/{noteId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidStudyNote(request.resource.data);
+        allow update: if isOwner(userId) && isValidStudyNote(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      // User Chat Messages Subcollection
+      match /chat_messages/{messageId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidChatMessage(request.resource.data);
+        allow update: if isOwner(userId) && isValidChatMessage(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Explicit deny for any other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

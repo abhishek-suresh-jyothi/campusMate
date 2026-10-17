@@ -1,0 +1,6 @@
+{
+  "name": "CampusMate AI",
+  "description": "Your Campus. Your AI. Your Success. All-in-one AI study companion, smart attendance tracker, academic timetable, SGPA/CGPA calculator, and assignments manager.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

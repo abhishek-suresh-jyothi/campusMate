@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Student profile document with academic details and AI subscription status.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "college": { "type": "string" },
+        "university": { "type": "string" },
+        "course": { "type": "string" },
+        "branch": { "type": "string" },
+        "semester": { "type": "integer" },
+        "streakDays": { "type": "integer" },
+        "cgpa": { "type": "number" },
+        "isAiSubscribed": { "type": "boolean" },
+        "subscriptionPlan": { "type": "string" },
+        "subscriptionPrice": { "type": "string" },
+        "subscriptionPeriod": { "type": "string" },
+        "customUpiId": { "type": "string" },
+        "customQrUri": { "type": "string" }
+      },
+      "required": ["id", "fullName", "email"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Student coursework or assignment item.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "dueDateText": { "type": "string" },
+        "points": { "type": "integer" },
+        "priority": { "type": "string" },
+        "isCompleted": { "type": "boolean" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "title", "subject", "isCompleted"]
+    },
+    "StudyNote": {
+      "title": "StudyNote",
+      "description": "Lecture note or AI-generated study summary.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "summaryText": { "type": "string" },
+        "noteType": { "type": "string" },
+        "createdDate": { "type": "integer" }
+      },
+      "required": ["id", "title", "subject"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Q&A and explanation message exchanged with Campus AI Study Tutor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "sender": { "type": "string" },
+        "text": { "type": "string" },
+        "courseCode": { "type": "string" },
+        "titleTag": { "type": "string" },
+        "conceptTag": { "type": "string" },
+        "comparisonTable": { "type": "string" },
+        "mentalAnchor": { "type": "string" },
+        "codeSnippet": { "type": "string" },
+        "timestamp": { "type": "integer" }
+      },
+      "required": ["id", "text", "courseCode"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Root user profile document scoped to student userId."
+    },
+    "/users/{userId}/assignments/{assignmentId}": {
+      "schema": "Assignment",
+      "description": "User assignments scoped to student userId."
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": "StudyNote",
+      "description": "Study notes and summaries scoped to student userId."
+    },
+    "/users/{userId}/chat_messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "AI study tutor chat history scoped to student userId."
+    }
+  }
+}
